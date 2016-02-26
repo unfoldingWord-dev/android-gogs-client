@@ -1,4 +1,4 @@
-package com.door43.gogsclient;
+package org.unfoldingword.gogsclient;
 
 import org.json.JSONException;
 import org.json.JSONObject;

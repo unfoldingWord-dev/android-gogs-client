@@ -1,4 +1,4 @@
-package com.door43.gogsclient;
+package org.unfoldingword.gogsclient;
 
 import android.util.Base64;
 
@@ -28,7 +28,7 @@ public class GogsAPI {
     private Response lastResponse = null;
 
     public GogsAPI(String baseUrl) {
-        this.baseUrl = baseUrl.replaceAll("/+$", "/");
+        this.baseUrl = baseUrl.replaceAll("/+$", "") + "/";
     }
 
     /**

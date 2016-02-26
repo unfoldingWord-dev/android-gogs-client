@@ -1,4 +1,4 @@
-package com.door43.gogsclient;
+package org.unfoldingword.gogsclient;
 
 /**
  * Holds the response from the api

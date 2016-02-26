@@ -4,7 +4,7 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'gogs-client'
 
-    publishedGroupId = 'com.unfoldingword.tools'
+    publishedGroupId = 'org.unfoldingword.tools'
     libraryName = 'Gogs Client'
     artifact = 'gogs-client'
 

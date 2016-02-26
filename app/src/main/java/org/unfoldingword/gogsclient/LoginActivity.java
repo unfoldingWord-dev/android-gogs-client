@@ -1,4 +1,4 @@
-package com.door43.gogsclient;
+package org.unfoldingword.gogsclient;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
