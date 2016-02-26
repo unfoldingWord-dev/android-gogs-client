@@ -1,5 +1,5 @@
 # android-gogs-client
-A client library for interacting with the [Gogs](https://gogs.io) REST api. This library is written to communicate according to the api defined in [gogits/go-gogs-wiki](https://github.com/gogits/go-gogs-client/wiki).
+A client library for interacting with the [Gogs](https://gogs.io) REST api. This library is written to communicate according to the api defined in [gogits/go-gogs-client](https://github.com/gogits/go-gogs-client/wiki).
 
 ##Supported Operations
 * create user
