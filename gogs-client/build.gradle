@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'gogs-client'
+
+    publishedGroupId = 'com.door43'
+    libraryName = 'Gogs Client'
+    artifact = 'gogs-client'
+
+    libraryDescription = 'An android library for interacting with the Gogs REST api.'
+
+    siteUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client'
+    gitUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client.git'
+
+    libraryVersion = '1.0'
+
+    developerId = 'neutrinog'
+    developerName = 'Joel Lonbeck'
+    developerEmail = 'joel@neutrinographics.com'
+
+    licenseName = 'GNU GENERAL PUBLIC LICENSE, Version 2.0'
+    licenseUrl = 'http://www.gnu.org/licenses/gpl-2.0.en.html'
+    allLicenses = ["GPL-2.0"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -23,3 +47,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
