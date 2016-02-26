@@ -20,7 +20,7 @@ A client library for interacting with the Gogs REST api. This library is written
 ##Installation
 To use this library your Android project must be configured to use the JCenter or Maven Central repositories.
 
-Add the following to your package dependencies and rebuild sync gradle.
+Add the following to your package dependencies and build your project.
 ```
 compile 'org.unfoldingword.tools:gogs-client:1.0.0'
 ```
