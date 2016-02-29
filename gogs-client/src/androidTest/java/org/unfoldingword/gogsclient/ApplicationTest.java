@@ -140,20 +140,23 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertTrue(api.deleteRepo(demoRepo, demoUser));
         assertEquals(api.listRepos(demoUser).size(), 0);
 
-        // unknown user is not an error
-        assertTrue(api.deleteRepo(demoRepo, fakeUser));
+        // unknown user is an error
+        assertFalse(api.deleteRepo(demoRepo, fakeUser));
+        assertEquals(api.getLastResponse().code, 401);
 
-        // unknown repo is not an error
+        // unknown repo is an error
         Repository fakeRepo = new Repository("fake-repository", "", false);
-        assertTrue(api.deleteRepo(fakeRepo, demoUser));
+        assertFalse(api.deleteRepo(fakeRepo, demoUser));
+        assertEquals(api.getLastResponse().code, 404);
     }
 
     public void test13DeleteUser() throws Exception {
         assertTrue(api.deleteUser(demoUser, adminUser));
         assertNull(api.getUser(demoUser, adminUser));
 
-        // unknown user is not an error on delete
-        assertTrue(api.deleteUser(fakeUser, adminUser));
+        // unknown user is an error on delete
+        assertFalse(api.deleteUser(fakeUser, adminUser));
+        assertEquals(api.getLastResponse().code, 404);
 
         // users cannot delete themselves
         assertFalse(api.deleteUser(fakeUser, fakeUser));
