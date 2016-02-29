@@ -22,5 +22,16 @@ To use this library your Android project must be configured to use the JCenter o
 
 Add the following to your package dependencies and sync gradle.
 ```
-compile 'org.unfoldingword.tools:gogs-client:1.0.0'
+compile 'org.unfoldingword.tools:gogs-client:1.1.0'
+```
+
+##Usage
+```
+GogsAPI api = new GogsAPI("https://try.gogs.io/api/v1"); // change to any gogs server
+List<User> users = api.searchUsers("some-user-name", 5, null);
+// do something
+... 
+
+// inspect actual response for more details if needed
+Response response = api.getLastResponse();
 ```
