@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client'
     gitUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.1.0'
 
     developerId = 'neutrinog'
     developerName = 'Joel Lonbeck'
@@ -32,7 +32,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.1.0"
     }
     buildTypes {
         release {
