@@ -75,9 +75,12 @@ public class GogsAPI {
      * @return
      */
     private Response request(String partialUrl, User user, String postData, String requestMethod) {
-        Response response = null;
+        int responseCode = -1;
+        String responseData = null;
+        Exception exception = null;
         try {
             URL url = new URL(this.baseUrl + partialUrl.replaceAll("^/+", ""));
+            // TODO: 2/26/2016 we should check the url and use http(s) as needed
             HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
             if(user != null) {
                 String auth = encodeUserAuth(user);
@@ -106,7 +109,8 @@ public class GogsAPI {
                 dos.close();
             }
 
-            String responseData = "";
+            responseCode = conn.getResponseCode();
+
             if(isRequestMethodReadable(conn.getRequestMethod())) {
                 // read response
                 InputStream is = conn.getInputStream();
@@ -118,13 +122,11 @@ public class GogsAPI {
                 }
                 responseData = baos.toString("UTF-8");
             }
-
-            response = new Response(conn.getResponseCode(), responseData);
         } catch (Exception e) {
-            e.printStackTrace();
+            exception = e;
         }
-        this.lastResponse = response;
-        return response;
+        this.lastResponse = new Response(responseCode, responseData, exception);
+        return this.lastResponse;
     }
 
     /**
@@ -181,8 +183,8 @@ public class GogsAPI {
                 json.put("password", user.getPassword());
                 json.put("send_notify", notify);
                 Response response = request("/admin/users", authUser, json.toString());
-                if(response != null) {
-                    return User.parse(new JSONObject(response.getData()));
+                if(response.code == 201 && response.data != null) {
+                    return User.parse(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -202,9 +204,9 @@ public class GogsAPI {
         List<User> users = new ArrayList<>();
         if(query != null && !query.trim().isEmpty()) {
             Response response = request(String.format("/users/search?q=%s&limit=%d", query, limit),user, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    JSONObject json = new JSONObject(response.getData());
+                    JSONObject json = new JSONObject(response.data);
                     JSONArray data = json.getJSONArray("data");
                     for(int i = 0; i < data.length(); i ++) {
                         User u = User.parse(data.getJSONObject(i));
@@ -229,9 +231,9 @@ public class GogsAPI {
     public User getUser(User user, User authUser) {
         if(user != null) {
             Response response = request(String.format("/users/%s", user.getUsername()), authUser, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    return User.parse(new JSONObject(response.getData()));
+                    return User.parse(new JSONObject(response.data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -249,7 +251,7 @@ public class GogsAPI {
     public boolean deleteUser(User user, User authUser) {
         if(user != null && authUser != null && !user.getUsername().equals(authUser.getUsername())) {
             Response response = request(String.format("/admin/users/%s", user.getUsername()), authUser, null, "DELETE");
-            if(response != null) {
+            if(response.code == 204) {
                 return true;
             }
         }
@@ -267,9 +269,9 @@ public class GogsAPI {
         List<Repository> repos = new ArrayList<>();
         if(query != null && !query.trim().isEmpty()) {
             Response response = request(String.format("/repos/search?q=%s&uid=%d&limit=%d", query.trim(), uid, limit), null, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    JSONObject json = new JSONObject(response.getData());
+                    JSONObject json = new JSONObject(response.data);
                     JSONArray data = json.getJSONArray("data");
                     for(int i = 0; i < data.length(); i ++) {
                         Repository repo = Repository.parse(data.getJSONObject(i));
@@ -294,9 +296,9 @@ public class GogsAPI {
         List<Repository> repos = new ArrayList<>();
         if(user != null) {
             Response response = request("/user/repos", user, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    JSONArray data = new JSONArray(response.getData());
+                    JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
                         Repository repo = Repository.parse(data.getJSONObject(i));
                         if(repo != null) {
@@ -325,8 +327,8 @@ public class GogsAPI {
                 json.put("description", repo.getDescription());
                 json.put("private", repo.getIsPrivate());
                 Response response = request("/user/repos", user, json.toString());
-                if(response != null) {
-                    return Repository.parse(new JSONObject(response.getData()));
+                if(response.code == 201 && response.data != null) {
+                    return Repository.parse(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -344,7 +346,7 @@ public class GogsAPI {
     public boolean deleteRepo(Repository repo, User user) {
         if(repo != null && user != null) {
             Response response = request(String.format("/repos/%s/%s", user.getUsername(), repo.getName()), user, null, "DELETE");
-            if(response != null) {
+            if(response.code == 204) {
                 return true;
             }
         }
@@ -360,9 +362,9 @@ public class GogsAPI {
         List<Token> tokens = new ArrayList<>();
         if(user != null) {
             Response response = request(String.format("/users/%s/tokens", user.getUsername()), user, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    JSONArray data = new JSONArray(response.getData());
+                    JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
                         Token token = Token.parse(data.getJSONObject(i));
                         if(token != null) {
@@ -389,8 +391,8 @@ public class GogsAPI {
             try {
                 json.put("name", token.getName());
                 Response response = request(String.format("/users/%s/tokens", user.getUsername()), user, json.toString());
-                if(response != null) {
-                    return Token.parse(new JSONObject(response.getData()));
+                if(response.code == 201 && response.data != null) {
+                    return Token.parse(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -408,9 +410,9 @@ public class GogsAPI {
         List<PublicKey> keys = new ArrayList<>();
         if(user != null) {
             Response response = request(String.format("/users/%s/keys", user.getUsername()), user, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    JSONArray data = new JSONArray(response.getData());
+                    JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
                         PublicKey key = PublicKey.parse(data.getJSONObject(i));
                         if(key != null) {
@@ -438,8 +440,8 @@ public class GogsAPI {
                 json.put("title", key.getTitle());
                 json.put("key", key.getKey());
                 Response response = request("/user/keys", user, json.toString());
-                if (response != null) {
-                    return PublicKey.parse(new JSONObject(response.getData()));
+                if (response.code == 201 && response.data != null) {
+                    return PublicKey.parse(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -457,9 +459,9 @@ public class GogsAPI {
     public PublicKey getPublicKey(PublicKey key, User user) {
         if(key != null && user != null) {
             Response response = request(String.format("/user/keys/%d", key.getId()), user, null);
-            if(response != null) {
+            if(response.code == 200 && response.data != null) {
                 try {
-                    return PublicKey.parse(new JSONObject(response.getData()));
+                    return PublicKey.parse(new JSONObject(response.data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -477,7 +479,7 @@ public class GogsAPI {
     public boolean deletePublicKey(PublicKey key, User user) {
         if(key != null && user != null) {
             Response response = request(String.format("/user/keys/%s", key.getId()), user, null, "DELETE");
-            if(response != null) {
+            if(response.code == 204) {
                 return true;
             }
         }

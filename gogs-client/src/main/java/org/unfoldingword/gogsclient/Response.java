@@ -4,20 +4,14 @@ package org.unfoldingword.gogsclient;
  * Holds the response from the api
  */
 public class Response {
-    private final int code;
-    private final String data;
+    public final int code;
+    public final String data;
+    public final Exception exception;
 
-    public Response(int code, String data) {
-        this.code = code;
-        this.data = data;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getData() {
-        return data;
+    public Response(int responseCode, String responseData, Exception exception) {
+        this.code = responseCode;
+        this.data = responseData;
+        this.exception = exception;
     }
 
     @Override
