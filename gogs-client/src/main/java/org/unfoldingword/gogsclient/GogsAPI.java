@@ -197,13 +197,13 @@ public class GogsAPI {
      * Searches for users that match the query
      * @param query
      * @param limit the maximum number of results to return
-     * @param user user to authenticate as. If null the email fields will be empty in the result
+     * @param authUser user to authenticate as. If null the email fields will be empty in the result
      * @return
      */
-    public List<User> searchUsers(String query, int limit, User user) {
+    public List<User> searchUsers(String query, int limit, User authUser) {
         List<User> users = new ArrayList<>();
         if(query != null && !query.trim().isEmpty()) {
-            Response response = request(String.format("/users/search?q=%s&limit=%d", query, limit),user, null);
+            Response response = request(String.format("/users/search?q=%s&limit=%d", query, limit), authUser, null);
             if(response.code == 200 && response.data != null) {
                 try {
                     JSONObject json = new JSONObject(response.data);
