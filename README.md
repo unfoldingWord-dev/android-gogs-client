@@ -3,6 +3,7 @@ A client library for interacting with the [Gogs](https://gogs.io) REST api. This
 
 ##Supported Operations
 * create user
+* edit user
 * search users
 * get user
 * delete user
