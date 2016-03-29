@@ -1,0 +1,33 @@
+{
+  "api": "https://try.gogs.io/api/v1",
+  "demoUser": {
+    "username": "demo-user-3635445323443554",
+    "password": "demo-password",
+    "email": "demo@example.com"
+  },
+  "adminUser": {
+    "username": "a real admin user name",
+    "password": "a real admin password"
+  },
+  "demoRepo": {
+    "name": "demo-repo-36454532314334534",
+    "description": "This is a test repository. Yay!",
+    "private": false
+  },
+  "fakeRepo": {
+    "name": "fake-repo-968433541635163r1",
+    "description": "This is never created",
+    "private": false
+  },
+  "fakeUser": {
+    "username": "fake-user-3542343543143553446",
+    "password": "fake-password"
+  },
+  "demoToken": {
+    "name": "demo-token-6353445353443"
+  },
+  "demoKey": {
+    "title": "demo-public-key-644531234t55414584",
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUbmwBOG5vI8qNCztby5LDc9ozwTuwsqf+1fpuHjT9iQ2Lu9nlKHQJcPSgdrYAcc+88K6o74ayhTAjfajKxkIHnbzZFjidoVZSQDhX5qvl93jvY/Uz390qky0sweW+fspm8pRJL+ofE3QEN5AXAuycq1tgsRT32XC+Ta82Xyv8b3xW+pWbsZzYCzUsZXDe/xWxg1rndXh2BIrmcYf9BMiv9ZJIojJXfuLCeRXl550tDzaMFC0rQ/T5pZjs/lQemtg92MnxnEDi5nhuvDwM4Q8eqCTOXc4BCE7iyIHv+B7rx+0x99ytMh5BSIIGyWTfgTot/AjGVm5aRKJSRFgPBm9N comment with whitespace"
+  }
+}

@@ -1,33 +1,41 @@
 package org.unfoldingword.gogsclient;
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
+import android.test.InstrumentationTestCase;
 
+import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
+public class ApplicationTest extends InstrumentationTestCase {
 
-    // CAUTION: do not commit admin user with username and password
-    private static final User adminUser = new User("", ""); // add a valid admin account for testing (admin is needed for creating and deleting users)
-    private static final String API_ROOT = ""; // a valid gogs api endpoint e.g. https://try.gogs.io/api/v1/
+    private User adminUser;
+    private User demoUser;
+    private User fakeUser;
+    private Token demoToken;
+    private Repository demoRepo;
+    private GogsAPI api;
+    private PublicKey demoKey;
 
-    private static final String DEMO_USER_NAME = "demo-user-001";
-    private static final User demoUser = new User(DEMO_USER_NAME, "demo-user-001");
-    private static final User fakeUser = new User("fake-user-001", "fake-user-001");
-    private static final Token demoToken = new Token("demo-token-001");
-    private static final Repository demoRepo = new Repository("demo-repo-001", "This is a demo repo", false);
-    private static final GogsAPI api = new GogsAPI(API_ROOT);
-    private static final PublicKey demoKey = new PublicKey("demo-public-key", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUbmwBOG5vI8qNCztby5LDc9ozwTuwsqf+1fpuHjT9iQ2Lu9nlKHQJcPSgdrYAcc+88K6o74ayhTAjfajKxkIHnbzZFjidoVZSQDhX5qvl93jvY/Uz390qky0sweW+fspm8pRJL+ofE3QEN5AXAuycq1tgsRT32XC+Ta82Xyv8b3xW+pWbsZzYCzUsZXDe/xWxg1rndXh2BIrmcYf9BMiv9ZJIojJXfuLCeRXl550tDzaMFC0rQ/T5pZjs/lQemtg92MnxnEDi5nhuvDwM4Q8eqCTOXc4BCE7iyIHv+B7rx+0x99ytMh5BSIIGyWTfgTot/AjGVm5aRKJSRFgPBm9N comment with whitespace");
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        // load config
+        InputStream is = getInstrumentation().getContext().getAssets().open("config.json");
+        String configString = TestUtil.readStreamToString(is);
+        JSONObject config = new JSONObject(configString);
 
-    static {
-        demoUser.email = "demo@example.com";
-    }
-
-    public ApplicationTest() {
-        super(Application.class);
+        // set up data
+        this.demoUser = User.parse(config.getJSONObject("demoUser"));
+        this.fakeUser = User.parse(config.getJSONObject("fakeUser"));
+        this.demoToken = Token.parse(config.getJSONObject("demoToken"));
+        this.adminUser = User.parse(config.getJSONObject("adminUser"));
+        this.demoRepo = Repository.parse(config.getJSONObject("demoRepo"));
+        this.demoKey = PublicKey.parse(config.getJSONObject("demoKey"));
+        this.api = new GogsAPI(config.getString("api"));
     }
 
     public void test01CreateUser() throws Exception {
@@ -40,8 +48,15 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertNull(badUser);
     }
 
-    public void test02SearchUsers() throws Exception {
-        List<User> users = api.searchUsers(DEMO_USER_NAME, 5, null);
+    public void test02UpdateUser() throws Exception {
+        demoUser.fullName = "My test full name";
+        User updatedUser = api.editUser(demoUser, adminUser);
+        assertNotNull(updatedUser);
+        assertEquals(updatedUser.fullName, demoUser.fullName);
+    }
+
+    public void test03SearchUsers() throws Exception {
+        List<User> users = api.searchUsers(demoUser.getUsername(), 5, null);
         assertTrue(users.size() > 0);
         assertTrue(users.get(0).email.isEmpty());
 
@@ -50,24 +65,27 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertTrue(!completeUsers.get(0).email.isEmpty());
     }
 
-    public void test03GetUser() throws Exception {
+    public void test04GetUser() throws Exception {
         User completeUser = api.getUser(demoUser, adminUser);
         assertNotNull(completeUser);
         assertTrue(!completeUser.email.isEmpty());
 
-        User user = api.getUser(demoUser, null);
-        assertNotNull(user);
-        assertTrue(user.email.isEmpty());
+        User foundUser = api.getUser(demoUser, null);
+        assertNotNull(foundUser);
+        assertTrue(foundUser.email.isEmpty());
+
+        User unknownUser = api.getUser(fakeUser, adminUser);
+        assertNull(unknownUser);
     }
 
-    public void test04SearchRepos() throws Exception {
+    public void test05SearchRepos() throws Exception {
         int limit = 2;
         List<Repository> repos = api.searchRepos("uw", 0, limit);
         assertTrue(repos.size() > 0);
         assertTrue(repos.size() <= limit);
     }
 
-    public void test05CreateRepo() throws Exception {
+    public void test06CreateRepo() throws Exception {
         Repository repo = api.createRepo(demoRepo, demoUser);
         assertNotNull(repo);
         assertEquals(repo.getFullName(), demoUser.getUsername() + "/" + demoRepo.getName());
@@ -77,7 +95,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertNull(badRepo);
     }
 
-    public void test06ListRepos() throws Exception {
+    public void test07ListRepos() throws Exception {
         List<Repository> repos = api.listRepos(demoUser);
         assertTrue(repos.size() > 0);
         assertEquals(repos.get(0).getFullName(), demoUser.getUsername() + "/" + demoRepo.getName());
@@ -87,56 +105,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertEquals(emptyRepos.size(), 0);
     }
 
-    public void test07CreateToken() throws Exception {
-        Token token = api.createToken(demoToken, demoUser);
-        assertNotNull(token);
-        assertEquals(token.getName(), demoToken.getName());
-
-        Token badToken = api.createToken(demoToken, null);
-        assertNull(badToken);
-    }
-
-    public void test08ListTokens() throws Exception {
-        List<Token> tokens = api.listTokens(demoUser);
-        assertTrue(tokens.size() > 0);
-        assertEquals(tokens.get(0).getName(), demoToken.getName());
-
-        List<Token> badTokens = api.listTokens(fakeUser);
-        assertEquals(badTokens.size(), 0);
-    }
-
-    public void test09CreatePublicKey() throws Exception {
-        PublicKey key = api.createPublicKey(demoKey, demoUser);
-        assertNotNull(key);
-        assertEquals(key.getTitle(), demoKey.getTitle());
-    }
-
-    public void test10ListPublicKeys() throws Exception {
-        List<PublicKey> keys = api.listPublicKeys(demoUser);
-        assertTrue(keys.size() > 0);
-        assertEquals(keys.get(0).getTitle(), demoKey.getTitle());
-    }
-
-    public void test10GetPublicKey() throws Exception {
-        // get key id first
-        List<PublicKey> keys = api.listPublicKeys(demoUser);
-        PublicKey key = new PublicKey(keys.get(0).getId());
-
-        PublicKey fetchedKey = api.getPublicKey(key, demoUser);
-        assertNotNull(fetchedKey);
-        assertEquals(fetchedKey.getTitle(), demoKey.getTitle());
-    }
-
-    public void test11DeletePublicKey() throws Exception {
-        // get key id first
-        List<PublicKey> keys = api.listPublicKeys(demoUser);
-        PublicKey key = new PublicKey(keys.get(0).getId());
-
-        assertTrue(api.deletePublicKey(key, demoUser));
-        assertEquals(api.listPublicKeys(demoUser).size(), 0);
-    }
-
-    public void test12DeleteRepo() throws Exception {
+    public void test08DeleteRepo() throws Exception {
         assertTrue(api.deleteRepo(demoRepo, demoUser));
         assertEquals(api.listRepos(demoUser).size(), 0);
 
@@ -150,15 +119,76 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         assertEquals(api.getLastResponse().code, 404);
     }
 
-    public void test13DeleteUser() throws Exception {
+    public void test09CreateToken() throws Exception {
+        Token token = api.createToken(demoToken, demoUser);
+        assertNotNull(token);
+        assertEquals(token.getName(), demoToken.getName());
+
+        Token badToken = api.createToken(demoToken, null);
+        assertNull(badToken);
+    }
+
+    public void test10ListTokens() throws Exception {
+        List<Token> tokens = api.listTokens(demoUser);
+        assertTrue(tokens.size() > 0);
+        assertEquals(tokens.get(0).getName(), demoToken.getName());
+
+        List<Token> badTokens = api.listTokens(fakeUser);
+        assertEquals(badTokens.size(), 0);
+    }
+
+    public void test11GetUserWithToken() throws Exception {
+        List<Token> tokens = api.listTokens(demoUser);
+        assertTrue(tokens.size() > 0);
+        demoUser.token = tokens.get(0);
+        demoUser.password = null;
+
+        User foundUser = api.getUser(demoUser, adminUser);
+        assertNotNull(foundUser);
+        assertTrue(!foundUser.email.isEmpty());
+    }
+
+    public void test12CreatePublicKey() throws Exception {
+        PublicKey key = api.createPublicKey(demoKey, demoUser);
+        assertNotNull(key);
+        assertEquals(key.getTitle(), demoKey.getTitle());
+    }
+
+    public void test13ListPublicKeys() throws Exception {
+        List<PublicKey> keys = api.listPublicKeys(demoUser);
+        assertTrue(keys.size() > 0);
+        assertEquals(keys.get(0).getTitle(), demoKey.getTitle());
+    }
+
+    public void test14GetPublicKey() throws Exception {
+        // get key id first
+        List<PublicKey> keys = api.listPublicKeys(demoUser);
+        PublicKey key = new PublicKey(keys.get(0).getId());
+
+        PublicKey fetchedKey = api.getPublicKey(key, demoUser);
+        assertNotNull(fetchedKey);
+        assertEquals(fetchedKey.getTitle(), demoKey.getTitle());
+    }
+
+    public void test15DeletePublicKey() throws Exception {
+        // get key id first
+        List<PublicKey> keys = api.listPublicKeys(demoUser);
+        PublicKey key = new PublicKey(keys.get(0).getId());
+
+        assertTrue(api.deletePublicKey(key, demoUser));
+        assertEquals(api.listPublicKeys(demoUser).size(), 0);
+    }
+
+    public void test16DeleteUser() throws Exception {
+        // users cannot delete themselves
+        assertFalse(api.deleteUser(demoUser, demoUser));
+
+        // delete user
         assertTrue(api.deleteUser(demoUser, adminUser));
         assertNull(api.getUser(demoUser, adminUser));
 
         // unknown user is an error on delete
         assertFalse(api.deleteUser(fakeUser, adminUser));
         assertEquals(api.getLastResponse().code, 404);
-
-        // users cannot delete themselves
-        assertFalse(api.deleteUser(fakeUser, fakeUser));
     }
 }

@@ -38,9 +38,9 @@ public class PublicKey {
         if(json != null) {
             try {
                 PublicKey key = new PublicKey(json.getString("title"), json.getString("key"));
-                key.id = json.getInt("id");
-                key.url = json.getString("url");
-                key.createdAt = json.getString("created_at");
+                key.id = (int)Util.getFromJSON(json, "id", 0);
+                key.url = (String)Util.getFromJSON(json, "url", null);
+                key.createdAt = (String)Util.getFromJSON(json, "created_at", null);
                 return key;
             } catch (JSONException e) {
                 e.printStackTrace();

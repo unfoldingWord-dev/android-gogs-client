@@ -9,11 +9,18 @@ import org.json.JSONObject;
 public class User {
 
     private String username = "";
-    private String password = "";
+    public String password = "";
     public String email = "";
-    private String fullName = "";
+    public String fullName = "";
     private String avatarUrl = "";
-    private Token token = null;
+    public Token token = null;
+    private String loginName = null;
+    private String website = null;
+    private String location = null;
+    private boolean active = false;
+    private boolean admin = false;
+    private boolean allowImportLocal = false;
+    private boolean allowGitHook = false;
 
     private User() {}
 
@@ -29,16 +36,21 @@ public class User {
      */
     public static User parse(JSONObject json) {
         if(json != null) {
-            try {
-                User user = new User();
-                user.username = json.getString("username");
-                user.fullName = json.getString("full_name");
-                user.email = json.getString("email");
-                user.avatarUrl = json.getString("avatar_url");
-                return user;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            User user = new User();
+            user.username = (String)Util.getFromJSON(json, "username", null);
+            user.password = (String)Util.getFromJSON(json, "password", null);
+            user.email = (String)Util.getFromJSON(json, "email", null);
+            user.token = (Token)Util.getFromJSON(json, "token", null);
+            user.avatarUrl = (String)Util.getFromJSON(json, "avatar_url", null);
+            user.fullName = (String)Util.getFromJSON(json, "full_name", null);
+            user.loginName = (String)Util.getFromJSON(json, "login_name", null);
+            user.website = (String)Util.getFromJSON(json, "website", null);
+            user.location = (String)Util.getFromJSON(json, "location", null);
+            user.active = (boolean)Util.getFromJSON(json, "active", true);
+            user.admin = (boolean)Util.getFromJSON(json, "admin", false);
+            user.allowGitHook = (boolean)Util.getFromJSON(json, "allow_git_hook", true);
+            user.allowImportLocal = (boolean)Util.getFromJSON(json, "allow_import_local", true);
+            return user;
         }
         return null;
     }
@@ -55,11 +67,26 @@ public class User {
         return password;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
+    /**
+     * Converts the user to a json object
+     * @return
+     */
+    public JSONObject toJSON() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("full_name", this.fullName);
+        json.put("email", this.email);
+        json.put("username", this.username);
+        json.put("password", this.password);
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+        // optional properties
+        json = Util.addToJSON(json, "login_name", this.loginName);
+        json = Util.addToJSON(json, "website", this.website);
+        json = Util.addToJSON(json, "location", this.location);
+        json = Util.addToJSON(json, "active", this.active);
+        json = Util.addToJSON(json, "admin", this.admin);
+        json = Util.addToJSON(json, "allow_git_hook", this.allowGitHook);
+        json = Util.addToJSON(json, "allow_import_local", this.allowImportLocal);
+
+        return json;
     }
 }

@@ -7,8 +7,8 @@ import org.json.JSONObject;
  * Represents an application authentication token
  */
 public class Token {
-    private String name = "";
-    private String sha1 = "";
+    private String name = null;
+    private String sha1 = null;
 
     private Token() {}
 
@@ -24,13 +24,9 @@ public class Token {
     public static Token parse(JSONObject json) {
         if(json != null) {
             Token token = new Token();
-            try {
-                token.name = json.getString("name");
-                token.sha1 = json.getString("sha1");
-                return token;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            token.name = (String)Util.getFromJSON(json, "name", null);
+            token.sha1 = (String)Util.getFromJSON(json, "sha1", null);
+            return token;
         }
         return null;
     }
