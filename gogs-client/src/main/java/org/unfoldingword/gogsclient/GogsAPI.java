@@ -188,6 +188,9 @@ public class GogsAPI {
                 json.put("email", user.email);
                 json.put("password", user.getPassword());
                 json.put("send_notify", notify);
+                if(user.fullName != null) {
+                    json.put("full_name", user.fullName);
+                }
                 Response response = request("/admin/users", authUser, json.toString());
                 if(response.code == 201 && response.data != null) {
                     return User.parse(new JSONObject(response.data));
