@@ -12,6 +12,12 @@
 bin/
 gen/
 
+### JetBrains ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+
+/*.iml
+*.iml
+
 # Gradle files
 .gradle/
 build/
