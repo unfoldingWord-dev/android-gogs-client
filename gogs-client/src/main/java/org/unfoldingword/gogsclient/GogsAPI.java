@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,8 +158,8 @@ public class GogsAPI {
      */
     private String encodeUserAuth(User user) {
         if(user != null) {
-            if(user.getToken() != null) {
-                return "token " + user.getToken();
+            if(user.token != null) {
+                return "token " + user.token;
             } else if(!user.getUsername().isEmpty() && !user.getPassword().isEmpty()) {
                 String credentials = user.getUsername() + ":" + user.getPassword();
                 try {
@@ -193,7 +192,7 @@ public class GogsAPI {
                 }
                 Response response = request("/admin/users", authUser, json.toString());
                 if(response.code == 201 && response.data != null) {
-                    return User.parse(new JSONObject(response.data));
+                    return User.fromJSON(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -213,7 +212,7 @@ public class GogsAPI {
             try {
                 Response response = request("/admin/users/" + user.getUsername(), authUser, user.toJSON().toString(), "PATCH");
                 if(response.code == 200 && response.data != null) {
-                    return User.parse(new JSONObject(response.data));
+                    return User.fromJSON(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -255,7 +254,7 @@ public class GogsAPI {
                     if(json.has("ok") && json.getBoolean("ok")) {
                         JSONArray data = json.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
-                            User u = User.parse(data.getJSONObject(i));
+                            User u = User.fromJSON(data.getJSONObject(i));
                             if (u != null) {
                                 users.add(u);
                             }
@@ -280,7 +279,7 @@ public class GogsAPI {
             Response response = request(String.format("/users/%s", user.getUsername()), authUser, null);
             if(response.code == 200 && response.data != null) {
                 try {
-                    return User.parse(new JSONObject(response.data));
+                    return User.fromJSON(new JSONObject(response.data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -306,7 +305,7 @@ public class GogsAPI {
                     if(json.has("ok") && json.getBoolean("ok")) {
                         JSONArray data = json.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
-                            Repository repo = Repository.parse(data.getJSONObject(i));
+                            Repository repo = Repository.fromJSON(data.getJSONObject(i));
                             if (repo != null) {
                                 repos.add(repo);
                             }
@@ -335,7 +334,7 @@ public class GogsAPI {
                 json.put("private", repo.getIsPrivate());
                 Response response = request("/user/repos", user, json.toString());
                 if(response.code == 201 && response.data != null) {
-                    return Repository.parse(new JSONObject(response.data));
+                    return Repository.fromJSON(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -357,7 +356,7 @@ public class GogsAPI {
                 try {
                     JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
-                        Repository repo = Repository.parse(data.getJSONObject(i));
+                        Repository repo = Repository.fromJSON(data.getJSONObject(i));
                         if(repo != null) {
                             repos.add(repo);
                         }
@@ -399,7 +398,7 @@ public class GogsAPI {
                 json.put("name", token.getName());
                 Response response = request(String.format("/users/%s/tokens", user.getUsername()), user, json.toString());
                 if(response.code == 201 && response.data != null) {
-                    return Token.parse(new JSONObject(response.data));
+                    return Token.fromJSON(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -421,7 +420,7 @@ public class GogsAPI {
                 try {
                     JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
-                        Token token = Token.parse(data.getJSONObject(i));
+                        Token token = Token.fromJSON(data.getJSONObject(i));
                         if(token != null) {
                             tokens.add(token);
                         }
@@ -448,7 +447,7 @@ public class GogsAPI {
                 json.put("key", key.getKey());
                 Response response = request("/user/keys", user, json.toString());
                 if (response.code == 201 && response.data != null) {
-                    return PublicKey.parse(new JSONObject(response.data));
+                    return PublicKey.fromJSON(new JSONObject(response.data));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -470,7 +469,7 @@ public class GogsAPI {
                 try {
                     JSONArray data = new JSONArray(response.data);
                     for(int i = 0; i < data.length(); i ++) {
-                        PublicKey key = PublicKey.parse(data.getJSONObject(i));
+                        PublicKey key = PublicKey.fromJSON(data.getJSONObject(i));
                         if(key != null) {
                             keys.add(key);
                         }
@@ -494,7 +493,7 @@ public class GogsAPI {
             Response response = request(String.format("/user/keys/%d", key.getId()), user, null);
             if(response.code == 200 && response.data != null) {
                 try {
-                    return PublicKey.parse(new JSONObject(response.data));
+                    return PublicKey.fromJSON(new JSONObject(response.data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

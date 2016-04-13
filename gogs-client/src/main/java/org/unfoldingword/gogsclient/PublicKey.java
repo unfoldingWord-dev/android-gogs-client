@@ -34,7 +34,7 @@ public class PublicKey {
      * @param json
      * @return
      */
-    public static PublicKey parse(JSONObject json) {
+    public static PublicKey fromJSON(JSONObject json) {
         if(json != null) {
             try {
                 PublicKey key = new PublicKey(json.getString("title"), json.getString("key"));

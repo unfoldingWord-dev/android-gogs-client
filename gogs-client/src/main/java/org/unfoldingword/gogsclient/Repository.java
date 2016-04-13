@@ -32,7 +32,7 @@ public class Repository {
      * @param json
      * @return
      */
-    public static Repository parse(JSONObject json) {
+    public static Repository fromJSON(JSONObject json) {
         if(json != null) {
             Repository repo = new Repository();
             repo.id = (int)Util.getFromJSON(json, "id", 0);
@@ -46,7 +46,7 @@ public class Repository {
             repo.sshUrl = (String)Util.getFromJSON(json, "ssh_url", null);
             if(json.has("owner")) {
                 try {
-                    repo.owner = User.parse(json.getJSONObject("owner"));
+                    repo.owner = User.fromJSON(json.getJSONObject("owner"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

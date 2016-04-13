@@ -21,7 +21,7 @@ public class Token {
      * @param json
      * @return
      */
-    public static Token parse(JSONObject json) {
+    public static Token fromJSON(JSONObject json) {
         if(json != null) {
             Token token = new Token();
             token.name = (String)Util.getFromJSON(json, "name", null);
@@ -31,11 +31,27 @@ public class Token {
         return null;
     }
 
+    /**
+     * Returns the json form of the token
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject toJSON() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("name", this.name);
+        json.put("sha1", this.sha1);
+        return json;
+    }
+
     @Override
     public String toString() {
         return this.sha1;
     }
 
+    /**
+     * Returns the name of the token
+     * @return
+     */
     public String getName() {
         return name;
     }

@@ -34,13 +34,12 @@ public class User {
      * @param json
      * @return
      */
-    public static User parse(JSONObject json) {
+    public static User fromJSON(JSONObject json) {
         if(json != null) {
             User user = new User();
             user.username = (String)Util.getFromJSON(json, "username", null);
             user.password = (String)Util.getFromJSON(json, "password", null);
             user.email = (String)Util.getFromJSON(json, "email", null);
-            user.token = (Token)Util.getFromJSON(json, "token", null);
             user.avatarUrl = (String)Util.getFromJSON(json, "avatar_url", null);
             user.fullName = (String)Util.getFromJSON(json, "full_name", null);
             user.loginName = (String)Util.getFromJSON(json, "login_name", null);
@@ -55,6 +54,12 @@ public class User {
         return null;
     }
 
+    /**
+     * Returns the token.
+     * @deprecated please used the public property `token` instead
+     * @return
+     */
+    @Deprecated
     public Token getToken() {
         return token;
     }
@@ -73,20 +78,18 @@ public class User {
      */
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("full_name", this.fullName);
-        json.put("email", this.email);
-        json.put("username", this.username);
-        json.put("password", this.password);
-
-        // optional properties
+        json = Util.addToJSON(json, "full_name", this.fullName);
+        json = Util.addToJSON(json, "email", this.email);
+        json = Util.addToJSON(json, "username", this.username);
+        json = Util.addToJSON(json, "password", this.password);
         json = Util.addToJSON(json, "login_name", this.loginName);
         json = Util.addToJSON(json, "website", this.website);
         json = Util.addToJSON(json, "location", this.location);
+        json = Util.addToJSON(json, "avatar_url", this.avatarUrl);
         json = Util.addToJSON(json, "active", this.active);
         json = Util.addToJSON(json, "admin", this.admin);
         json = Util.addToJSON(json, "allow_git_hook", this.allowGitHook);
         json = Util.addToJSON(json, "allow_import_local", this.allowImportLocal);
-
         return json;
     }
 }

@@ -29,12 +29,12 @@ public class ApplicationTest extends InstrumentationTestCase {
         JSONObject config = new JSONObject(configString);
 
         // set up data
-        this.demoUser = User.parse(config.getJSONObject("demoUser"));
-        this.fakeUser = User.parse(config.getJSONObject("fakeUser"));
-        this.demoToken = Token.parse(config.getJSONObject("demoToken"));
-        this.adminUser = User.parse(config.getJSONObject("adminUser"));
-        this.demoRepo = Repository.parse(config.getJSONObject("demoRepo"));
-        this.demoKey = PublicKey.parse(config.getJSONObject("demoKey"));
+        this.demoUser = User.fromJSON(config.getJSONObject("demoUser"));
+        this.fakeUser = User.fromJSON(config.getJSONObject("fakeUser"));
+        this.demoToken = Token.fromJSON(config.getJSONObject("demoToken"));
+        this.adminUser = User.fromJSON(config.getJSONObject("adminUser"));
+        this.demoRepo = Repository.fromJSON(config.getJSONObject("demoRepo"));
+        this.demoKey = PublicKey.fromJSON(config.getJSONObject("demoKey"));
         this.api = new GogsAPI(config.getString("api"));
     }
 
