@@ -16,6 +16,11 @@ public class Token {
         this.name = name;
     }
 
+    public Token(String name, String sha1) {
+        this.name = name;
+        this.sha1 = sha1;
+    }
+
     /**
      * Returns a token parsed from json
      * @param json
