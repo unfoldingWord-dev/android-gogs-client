@@ -181,15 +181,10 @@ public class GogsAPI {
      */
     public User createUser(User user, User authUser, boolean notify) {
         if(user != null) {
-            JSONObject json = new JSONObject();
+            JSONObject json;
             try {
-                json.put("username", user.getUsername());
-                json.put("email", user.email);
-                json.put("password", user.getPassword());
+                json = user.toJSON();
                 json.put("send_notify", notify);
-                if(user.fullName != null) {
-                    json.put("full_name", user.fullName);
-                }
                 Response response = request("/admin/users", authUser, json.toString());
                 if(response.code == 201 && response.data != null) {
                     return User.fromJSON(new JSONObject(response.data));
