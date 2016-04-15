@@ -1,0 +1,7 @@
+These notes are just to help me remember how to publish the package.
+
+A great tutorial on how to get set up can be found at http://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en.
+
+1. Make sure your local.properties has been properly set up to include your bintray info
+2. build the app using `gradlew install`
+3. upload using `gradlew bintrayUpload`
