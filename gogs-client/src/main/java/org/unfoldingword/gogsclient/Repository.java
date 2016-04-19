@@ -57,6 +57,32 @@ public class Repository {
         return null;
     }
 
+    /**
+     * Returns the json form of the repository
+     * @return
+     */
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        json = Util.addToJSON(json, "id", this.id);
+        json = Util.addToJSON(json, "name", this.name);
+        json = Util.addToJSON(json, "description", this.description);
+        json = Util.addToJSON(json, "full_name", this.fullName);
+        json = Util.addToJSON(json, "private", this.isPrivate);
+        json = Util.addToJSON(json, "fork", this.isFork);
+        json = Util.addToJSON(json, "html_url", this.htmlUrl);
+        json = Util.addToJSON(json, "clone_url", this.cloneUrl);
+        json = Util.addToJSON(json, "ssh_url", this.sshUrl);
+        if(this.owner != null) {
+            try {
+                json.put("owner", this.owner.toJSON());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return json;
+    }
+
     public String getName() {
         return name;
     }

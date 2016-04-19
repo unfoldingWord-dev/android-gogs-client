@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client'
     gitUrl = 'https://github.com/unfoldingWord-dev/android-gogs-client.git'
 
-    libraryVersion = '1.3.3'
+    libraryVersion = '1.3.4'
 
     developerId = 'neutrinog'
     developerName = 'Joel Lonbeck'
