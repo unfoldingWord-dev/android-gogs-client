@@ -10,6 +10,7 @@ A client library for interacting with the [Gogs](https://gogs.io) REST api. This
 * search repositories
 * list user repositories
 * create repository
+* get repository
 * delete repository
 * create application token
 * list application tokens

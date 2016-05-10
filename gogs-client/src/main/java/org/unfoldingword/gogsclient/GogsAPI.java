@@ -344,6 +344,26 @@ public class GogsAPI {
     }
 
     /**
+     * Returns a single repository
+     * @param repo the repository to retreive
+     * @param authUser the user to authenticate as. This does not have to be the owner of the repository
+     * @return
+     */
+    public Repository getRepo(Repository repo, User authUser) {
+        if(repo != null) {
+            Response response = request("/repos/" + repo.getFullName(), authUser, null);
+            if(response.code == 200 && response.data != null) {
+                try {
+                    return Repository.fromJSON(new JSONObject(response.data));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Lists all repositories that are accessible to the user
      * @param user the user who's repositories will be listed. Requires token or username and password
      * @return

@@ -105,7 +105,15 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertEquals(emptyRepos.size(), 0);
     }
 
-    public void test08DeleteRepo() throws Exception {
+    public void test08GetRepo() throws Exception {
+        int limit = 2;
+        List<Repository> repos = api.searchRepos("d", 0, limit);
+        Repository repo = api.getRepo(repos.get(0), adminUser);
+        assertNotNull(repo);
+        assertFalse(repo.getHtmlUrl().equals(""));
+    }
+
+    public void test09DeleteRepo() throws Exception {
         assertTrue(api.deleteRepo(demoRepo, demoUser));
         assertEquals(api.listRepos(demoUser).size(), 0);
 
@@ -119,7 +127,7 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertEquals(api.getLastResponse().code, 404);
     }
 
-    public void test09CreateToken() throws Exception {
+    public void test10CreateToken() throws Exception {
         Token token = api.createToken(demoToken, demoUser);
         assertNotNull(token);
         assertEquals(token.getName(), demoToken.getName());
@@ -128,7 +136,7 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertNull(badToken);
     }
 
-    public void test10ListTokens() throws Exception {
+    public void test11ListTokens() throws Exception {
         List<Token> tokens = api.listTokens(demoUser);
         assertTrue(tokens.size() > 0);
         assertEquals(tokens.get(0).getName(), demoToken.getName());
@@ -137,7 +145,7 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertEquals(badTokens.size(), 0);
     }
 
-    public void test11GetUserWithToken() throws Exception {
+    public void test12GetUserWithToken() throws Exception {
         List<Token> tokens = api.listTokens(demoUser);
         assertTrue(tokens.size() > 0);
         demoUser.token = tokens.get(0);
@@ -148,19 +156,19 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertTrue(!foundUser.email.isEmpty());
     }
 
-    public void test12CreatePublicKey() throws Exception {
+    public void test13CreatePublicKey() throws Exception {
         PublicKey key = api.createPublicKey(demoKey, demoUser);
         assertNotNull(key);
         assertEquals(key.getTitle(), demoKey.getTitle());
     }
 
-    public void test13ListPublicKeys() throws Exception {
+    public void test14ListPublicKeys() throws Exception {
         List<PublicKey> keys = api.listPublicKeys(demoUser);
         assertTrue(keys.size() > 0);
         assertEquals(keys.get(0).getTitle(), demoKey.getTitle());
     }
 
-    public void test14GetPublicKey() throws Exception {
+    public void test15GetPublicKey() throws Exception {
         // get key id first
         List<PublicKey> keys = api.listPublicKeys(demoUser);
         PublicKey key = new PublicKey(keys.get(0).getId());
@@ -170,7 +178,7 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertEquals(fetchedKey.getTitle(), demoKey.getTitle());
     }
 
-    public void test15DeletePublicKey() throws Exception {
+    public void test16DeletePublicKey() throws Exception {
         // get key id first
         List<PublicKey> keys = api.listPublicKeys(demoUser);
         PublicKey key = new PublicKey(keys.get(0).getId());
@@ -179,7 +187,7 @@ public class ApplicationTest extends InstrumentationTestCase {
         assertEquals(api.listPublicKeys(demoUser).size(), 0);
     }
 
-    public void test16DeleteUser() throws Exception {
+    public void test17DeleteUser() throws Exception {
         // users cannot delete themselves
         assertFalse(api.deleteUser(demoUser, demoUser));
 
