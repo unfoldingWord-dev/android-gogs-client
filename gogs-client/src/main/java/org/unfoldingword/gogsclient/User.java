@@ -21,6 +21,7 @@ public class User {
     private boolean admin = false;
     private boolean allowImportLocal = false;
     private boolean allowGitHook = false;
+    private int id = 0;
 
     private User() {}
 
@@ -37,6 +38,7 @@ public class User {
     public static User fromJSON(JSONObject json) {
         if(json != null) {
             User user = new User();
+            user.id = (int)Util.getFromJSON(json, "id", 0);
             user.username = (String)Util.getFromJSON(json, "username", null);
             user.password = (String)Util.getFromJSON(json, "password", null);
             user.email = (String)Util.getFromJSON(json, "email", null);
@@ -78,6 +80,9 @@ public class User {
      */
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
+        if(this.id > 0) {
+            json = Util.addToJSON(json, "id", this.id);
+        }
         json = Util.addToJSON(json, "full_name", this.fullName);
         json = Util.addToJSON(json, "email", this.email);
         json = Util.addToJSON(json, "username", this.username);
@@ -91,5 +96,13 @@ public class User {
         json = Util.addToJSON(json, "allow_git_hook", this.allowGitHook);
         json = Util.addToJSON(json, "allow_import_local", this.allowImportLocal);
         return json;
+    }
+
+    /**
+     * Returns the id of the gogs user
+     * @return
+     */
+    public int getId() {
+        return id;
     }
 }
