@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/neutrinog/maven/gogs-client/images/download.svg) ](https://bintray.com/neutrinog/maven/gogs-client/_latestVersion)
+
 # android-gogs-client
 A client library for interacting with the [Gogs](https://gogs.io) REST api. This library is written to communicate according to the api defined in [gogits/go-gogs-client](https://github.com/gogits/go-gogs-client/wiki).
 
