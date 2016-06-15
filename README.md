@@ -24,7 +24,7 @@ To use this library your Android project must be configured to use the JCenter o
 
 Add the following to your package dependencies and sync gradle.
 ```
-compile 'org.unfoldingword.tools:gogs-client:1.1.0'
+compile 'org.unfoldingword.tools:gogs-client:1.6.0'
 ```
 
 ##Usage
