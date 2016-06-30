@@ -1,0 +1,35 @@
+language: android
+jdk: oraclejdk8
+cache:
+  directories:
+  - "$HOME/.gradle/caches"
+  - "$HOME/.gradle/daemon"
+  - "$HOME/.gradle/native"
+  - "$HOME/.gradle/wrapper"
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+sudo: false
+env:
+  global:
+  - GRADLE_OPTS="-Xms128m"
+  matrix:
+  - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
+android:
+  components:
+  - platform-tools
+  - tools
+  - build-tools-22.0.1
+  - android-22
+  - sys-img-armeabi-v7a-android-19
+before_script:
+- chmod +x gradlew
+- echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
+- adb devices
+- adb shell input keyevent 82 &
+script:
+- travis_wait ./gradlew connectedAndroidTest --continue  --stacktrace
+before_install:
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then openssl aes-256-cbc -K $encrypted_c68e6ffef629_key -iv $encrypted_c68e6ffef629_iv
+  -in config.json.enc -out src/androidTest/assets/config.json -d; fi
