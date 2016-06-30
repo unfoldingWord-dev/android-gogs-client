@@ -31,5 +31,6 @@ before_script:
 script:
 - travis_wait ./gradlew connectedAndroidTest --continue  --stacktrace
 before_install:
-- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then openssl aes-256-cbc -K $encrypted_c68e6ffef629_key -iv $encrypted_c68e6ffef629_iv
-  -in config.json.enc -out src/androidTest/assets/config.json -d; fi
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then openssl aes-256-cbc -K $encrypted_31315891990e_key
+  -iv $encrypted_31315891990e_iv -in config.json.enc -out gogs-client/src/androidTest/assets/config.json
+  -d; fi
