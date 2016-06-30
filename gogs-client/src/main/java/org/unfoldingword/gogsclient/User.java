@@ -41,6 +41,10 @@ public class User {
             user.id = (int)Util.getFromJSON(json, "id", 0);
             user.username = (String)Util.getFromJSON(json, "username", null);
             user.password = (String)Util.getFromJSON(json, "password", null);
+            String token = (String)Util.getFromJSON(json, "token", null);
+            if(token != null && !token.isEmpty()) {
+                user.token = new Token("token", token);
+            }
             user.email = (String)Util.getFromJSON(json, "email", null);
             user.avatarUrl = (String)Util.getFromJSON(json, "avatar_url", null);
             user.fullName = (String)Util.getFromJSON(json, "full_name", null);

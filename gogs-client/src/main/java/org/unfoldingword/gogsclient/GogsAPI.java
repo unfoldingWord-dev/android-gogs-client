@@ -160,7 +160,8 @@ public class GogsAPI {
         if(user != null) {
             if(user.token != null) {
                 return "token " + user.token;
-            } else if(!user.getUsername().isEmpty() && !user.getPassword().isEmpty()) {
+            } else if(user.getUsername() != null && !user.getUsername().isEmpty()
+                    && user.getPassword() != null && !user.getPassword().isEmpty()) {
                 String credentials = user.getUsername() + ":" + user.getPassword();
                 try {
                     return "Basic " + Base64.encodeToString(credentials.getBytes("UTF-8"), Base64.NO_WRAP);

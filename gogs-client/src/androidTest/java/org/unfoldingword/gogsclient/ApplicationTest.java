@@ -80,7 +80,7 @@ public class ApplicationTest extends InstrumentationTestCase {
 
     public void test05SearchRepos() throws Exception {
         int limit = 2;
-        List<Repository> repos = api.searchRepos("uw", 0, limit);
+        List<Repository> repos = api.searchRepos("demo", 0, limit);
         assertTrue(repos.size() > 0);
         assertTrue(repos.size() <= limit);
     }
