@@ -83,7 +83,7 @@ public class GogsAPI {
         try {
             URL url = new URL(this.baseUrl + partialUrl.replaceAll("^/+", ""));
             HttpURLConnection conn;
-            if(url.getProtocol() == "https") {
+            if(url.getProtocol().equals("https")) {
                 conn = (HttpsURLConnection)url.openConnection();
             } else {
                 conn = (HttpURLConnection)url.openConnection();
