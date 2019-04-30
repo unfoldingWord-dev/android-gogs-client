@@ -16,7 +16,7 @@ ext {
     libraryVersion = '1.6.1'
 
     developerId = 'neutrinog'
-    developerName = 'Joel Lonbeck'
+    developerName = 'Joel'
     developerEmail = 'joel@neutrinographics.com'
 
     licenseName = 'GNU GENERAL PUBLIC LICENSE, Version 2.0'
